@@ -1,32 +1,45 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+  <v-app>
+    <v-app-bar
+      app
+    >
+      <v-toolbar-title>Deck Picks</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn
+        href="https://github.com/vuetifyjs/vuetify/releases/latest"
+        target="_blank"
+        icon
+      >
+        <v-icon>mdi-help-circle-outline</v-icon>
+      </v-btn>
+    </v-app-bar>
+    <v-content>
+      <router-view></router-view>
+    </v-content>
+    <v-footer id="footer"></v-footer>
+  </v-app>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+export default {
+  name: 'App',
 
-#nav {
-  padding: 30px;
+  components: {
+  },
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
+  data: () => ({
+  }),
 
-    &.router-link-exact-active {
-      color: #42b983;
-    }
+  created () {
+    this.$vuetify.theme.dark = true
   }
 }
+</script>
+
+<style lang="scss" scoped>
+  #footer {
+    height: 32px;
+    padding: 0;
+    z-index: 10;
+  }
 </style>
