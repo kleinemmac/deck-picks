@@ -1,5 +1,26 @@
 <template>
-  <v-container>
+  <v-container fluid>
+    <v-row>
+      <v-col>
+        <p class="display-3 py-5">Your Decks</p>
+        <v-card
+          max-width="250"
+        >
+          <v-card-text class="text-center">
+            <p class="display-1">
+              Create<br>New<br>Deck
+            </p>
+            <v-btn
+              href="https://github.com/vuetifyjs/vuetify/releases/latest"
+              target="_blank"
+              icon
+            >
+              <v-icon>mdi-plus</v-icon>
+            </v-btn>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
     <v-navigation-drawer v-model="faqVisible" right absolute floating width="25%">
       <v-container>
         <v-row>
@@ -40,7 +61,13 @@ export default {
   data: () => ({
     faqVisible: true,
     faqButtonVisible: false
-  })
+  }),
+
+  mounted: function () {
+    this.$store.dispatch('decks/makeDeck')
+    this.$store.dispatch('decks/makeDeck')
+    this.$store.dispatch('decks/getAllDecks')
+  }
 }
 </script>
 
