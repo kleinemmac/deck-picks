@@ -3,7 +3,9 @@
     <v-app-bar
       app
     >
-      <v-toolbar-title>Deck Picks</v-toolbar-title>
+      <v-toolbar-title>
+        <router-link to="/">Deck Picks</router-link>
+      </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn
         href="https://github.com/vuetifyjs/vuetify/releases/latest"
@@ -37,6 +39,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .v-application a {
+    text-decoration: none;
+    color: #fff;
+  }
   #footer {
     height: 32px;
     padding: 0;

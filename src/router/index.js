@@ -7,7 +7,8 @@ Vue.use(VueRouter)
 
 const routes = [
   { name: 'dashboard', path: '/', component: Dashboard },
-  { name: 'edit-deck', path: '/decks', component: EditDeck }
+  { name: 'edit-deck', path: '/decks/:id', component: EditDeck },
+  { name: '404', path: '*', component: Dashboard }
 ]
 
 const router = new VueRouter({

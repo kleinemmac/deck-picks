@@ -5,16 +5,13 @@
         <p class="display-3 py-5">Your Decks</p>
         <v-card
           max-width="250"
+          @click="createNewDeck()"
         >
           <v-card-text class="text-center">
             <p class="display-1">
               Create<br>New<br>Deck
             </p>
-            <v-btn
-              href="https://github.com/vuetifyjs/vuetify/releases/latest"
-              target="_blank"
-              icon
-            >
+            <v-btn icon>
               <v-icon>mdi-plus</v-icon>
             </v-btn>
           </v-card-text>
@@ -63,9 +60,15 @@ export default {
     faqButtonVisible: false
   }),
 
+  methods: {
+    createNewDeck () {
+      this.$store.dispatch('decks/makeDeck').then(id => {
+        this.$router.push({ name: 'edit-deck', params: { id } })
+      })
+    }
+  },
+
   mounted: function () {
-    this.$store.dispatch('decks/makeDeck')
-    this.$store.dispatch('decks/makeDeck')
     this.$store.dispatch('decks/getAllDecks')
   }
 }

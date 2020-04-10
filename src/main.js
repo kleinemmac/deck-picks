@@ -4,6 +4,11 @@ import './registerServiceWorker'
 import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
+import vueDebounce from 'vue-debounce'
+
+Vue.use(vueDebounce, {
+  listenTo: 'input'
+})
 
 Vue.config.productionTip = false
 

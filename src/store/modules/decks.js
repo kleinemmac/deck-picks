@@ -1,9 +1,11 @@
 const state = {
-  decks: []
+  decks: [],
+  currentDeck: {}
 }
 
 const getters = {
-  getAllDecks: (state) => { return state.decks }
+  getAllDecks: (state) => { return state.decks },
+  getCurrentDeck: (state) => { return state.currentDeck }
 }
 
 const actions = {
@@ -22,13 +24,23 @@ const actions = {
     }
     commit('setAllDecks', deckObjects)
   },
+  async getDeck ({ commit }, id) {
+    const deck = localStorage.getItem('deck-' + id)
+    if (deck) {
+      commit('setDeck', JSON.parse(deck))
+    }
+    return JSON.parse(deck)
+  },
   async makeDeck ({ commit }) {
-    const id = 'deck-' + Math.random().toString(36).substring(7)
-    localStorage.setItem(id, JSON.stringify({ id }))
-    commit('addDeck', { id })
+    const id = Math.random().toString(36).substring(7)
+    const key = 'deck-' + id
+    localStorage.setItem(key, JSON.stringify({ id, name: '' }))
+    commit('addDeck', { id, name: '' })
+    return id
   },
   async updateDeck ({ commit }, deck) {
-    localStorage.setItem(deck.id, JSON.stringify(deck))
+    localStorage.setItem('deck-' + deck.id, JSON.stringify(deck))
+    commit('updateDeck', deck)
   },
   async deleteDeck ({ commit }, id) {
     localStorage.removeItem(id)
@@ -39,11 +51,14 @@ const mutations = {
   setAllDecks (state, decks) {
     state.decks = decks
   },
+  setDeck (state, deck) {
+    state.currentDeck = deck
+  },
   addDeck (state, deck) {
     state.decks.push(deck)
   },
   updateDeck (state, deck) {
-    //
+    state.currentDeck = deck
   },
   deleteDeck (state, deck) {
     //
