@@ -90,10 +90,13 @@
                   ></v-text-field>
                 </v-col>
               </v-row>
+            </v-container>
+            <v-container class="card-results">
               <v-row
                 v-for="card in searchedCards"
                 :key="card.id"
                 @click="getCard(card)"
+                class="cursor-pointer"
               >
                 <v-col>{{ card.name }}</v-col>
               </v-row>
@@ -102,21 +105,45 @@
         </v-col>
         <v-col cols="6">
           <template v-if="selectedCard">
-            <v-img
-              :src="selectedCard.imageUrl"
-              max-width="265px"
-              class="mx-auto"
-            >
-              <template v-slot:placeholder>
-                <v-row
-                  class="fill-height ma-0"
-                  align="center"
-                  justify="center"
-                >
-                  <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
-                </v-row>
-              </template>
-            </v-img>
+            <div class="mx-auto img-container">
+              <v-img
+                :src="selectedCard.imageUrl"
+                max-width="265px"
+                class="mx-auto"
+              >
+                <template v-slot:placeholder>
+                  <v-row
+                    class="fill-height ma-0"
+                    align="center"
+                    justify="center"
+                  >
+                    <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+                  </v-row>
+                </template>
+              </v-img>
+              <v-btn id="add-card" class="mx-2" fab dark color="purple" @click="addCardToDeck()">
+                <v-icon dark>mdi-plus</v-icon>
+              </v-btn>
+            </div>
+            <v-row>
+              <v-col>
+                <v-card class="pa-3">
+                  <p class="display-1 text-center">{{ selectedCard.name }}</p>
+                  <div class="body-1">
+                    <p class="capitalize">Layout: {{ selectedCard.layout }}</p>
+                    <p>Color(s): {{ selectedCard.colors.join(', ') }}</p>
+                    <p>Converted Mana Cost: {{ selectedCard.cmc }}</p>
+                    <p>Type: {{ selectedCard.type }}</p>
+                    <p>Rarity: {{ selectedCard.rarity }}</p>
+                    <p>Set: {{ selectedCard.setName }}</p>
+                    <p>Text: <span v-html="selectedCard.text"></span></p>
+                    <p>Flavor Text: <span v-html="selectedCard.flavor"></span></p>
+                    <p>Power: {{ selectedCard.power }}</p>
+                    <p>Toughness: {{ selectedCard.toughness }}</p>
+                  </div>
+                </v-card>
+              </v-col>
+            </v-row>
           </template>
         </v-col>
         <v-col cols="3" class="pa-0">
@@ -138,6 +165,21 @@
                     append-icon="mdi-content-save"
                     @click:append="editingName = false; updateDeck()"
                   ></v-text-field>
+                </v-col>
+              </v-row>
+            </v-container>
+            <v-container id="deck-listing">
+              <v-row
+                v-for="(card, index) in deck.cards"
+                :key="card.id"
+                align="center"
+              >
+                <v-col cols="2" @click="getCard(card)" class="cursor-pointer">
+                  <img :src="card.imageUrl" width="50">
+                </v-col>
+                <v-col cols="8" @click="getCard(card)" class="cursor-pointer">{{ card.name }}</v-col>
+                <v-col cols="2">
+                  <v-btn icon @click="removeCardFromDeck(index)"><v-icon>mdi-close</v-icon></v-btn>
                 </v-col>
               </v-row>
             </v-container>
@@ -216,6 +258,14 @@ export default {
     },
     getCard (card) {
       this.selectedCard = card
+    },
+    addCardToDeck () {
+      this.deck.cards.push(this.selectedCard)
+      this.updateDeck()
+    },
+    removeCardFromDeck (index) {
+      this.deck.cards.splice(index, 1)
+      this.updateDeck()
     }
   },
 
@@ -234,5 +284,30 @@ export default {
 <style lang="scss" scoped>
   .full-height {
     height: 100%;
+  }
+  .card-results {
+    max-height: calc(100vh - 452px);
+    overflow-y: auto;
+  }
+  .capitalize {
+    text-transform: capitalize;
+  }
+  .img-container {
+    width: 256px;
+  }
+  .cursor-pointer {
+    cursor: pointer;
+    &:hover {
+      color: green;
+    }
+  }
+  #add-card {
+    position: relative;
+    top: -35px;
+    left: -15px;
+  }
+  #deck-listing {
+    max-height: calc(100vh - 170px);
+    overflow-y: auto;
   }
 </style>

@@ -1,8 +1,63 @@
 <template>
   <v-container fluid>
-    <v-row>
+    <v-row v-if="loadingDecks" justify="center">
+      <v-progress-circular
+        :size="70"
+        :width="7"
+        color="green"
+        indeterminate
+      ></v-progress-circular>
+    </v-row>
+    <v-row v-else>
       <v-col>
         <p class="display-3 py-5">Your Decks</p>
+        <v-row>
+          <v-col
+            class="flex-initial"
+            v-for="deck in decks"
+            :key="deck.id"
+          >
+            <v-card class="d-inline-block mx-auto">
+              <v-container>
+                <v-row justify="space-between">
+                  <v-col cols="auto">
+                    <v-img
+                      height="200"
+                      width="200"
+                      :src="deck.cards[0].imageUrl"
+                      v-if="deck.cards.length > 0"
+                    ></v-img>
+                  </v-col>
+                  <v-col
+                    cols="auto"
+                    class="text-center pl-0"
+                  >
+                    <v-row
+                      class="flex-column ma-0 fill-height"
+                      justify="center"
+                    >
+                      <v-col class="px-0">
+                        <v-btn icon @click="editDeck(deck.id)">
+                          <v-icon>mdi-pencil</v-icon>
+                        </v-btn>
+                      </v-col>
+                      <v-col class="px-0">
+                        <v-btn icon @click="deleteDeck(deck.id)">
+                          <v-icon>mdi-trash-can</v-icon>
+                        </v-btn>
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                </v-row>
+              </v-container>
+              <v-container>
+                <v-row>
+                  <v-col>{{ deck.name }}</v-col>
+                </v-row>
+              </v-container>
+            </v-card>
+          </v-col>
+        </v-row>
         <v-card
           max-width="250"
           @click="createNewDeck()"
@@ -57,19 +112,35 @@ export default {
 
   data: () => ({
     faqVisible: true,
-    faqButtonVisible: false
+    faqButtonVisible: false,
+    decks: [],
+    loadingDecks: true
   }),
 
   methods: {
+    getAllDecks () {
+      this.$store.dispatch('decks/getAllDecks').then((decks) => {
+        this.decks = decks
+        this.loadingDecks = false
+      })
+    },
     createNewDeck () {
       this.$store.dispatch('decks/makeDeck').then(id => {
         this.$router.push({ name: 'edit-deck', params: { id } })
+      })
+    },
+    editDeck (id) {
+      this.$router.push({ name: 'edit-deck', params: { id } })
+    },
+    deleteDeck (id) {
+      this.$store.dispatch('decks/deleteDeck', id).then(() => {
+        this.getAllDecks()
       })
     }
   },
 
   mounted: function () {
-    this.$store.dispatch('decks/getAllDecks')
+    this.getAllDecks()
   }
 }
 </script>
@@ -82,5 +153,9 @@ export default {
     i {
       right: 15px;
     }
+  }
+  .flex-initial {
+    flex: initial;
+    width: 300px;
   }
 </style>

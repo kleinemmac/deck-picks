@@ -18,7 +18,7 @@
     <v-content>
       <router-view></router-view>
     </v-content>
-    <v-footer id="footer"></v-footer>
+    <v-footer id="footer" fixed></v-footer>
   </v-app>
 </template>
 
