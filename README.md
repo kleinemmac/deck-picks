@@ -1,5 +1,5 @@
 # deck-picks
-
+# WIP
 ## Project setup
 ```
 npm install
