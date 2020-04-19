@@ -12,6 +12,21 @@
       <v-col>
         <p class="display-3 py-5">Your Decks</p>
         <v-row>
+          <v-col class="flex-initial">
+            <v-card
+              @click="createNewDeck()"
+              id="new-deck-card"
+            >
+              <v-card-text class="text-center">
+                <p class="display-1">
+                  Create<br>New<br>Deck
+                </p>
+                <v-btn icon>
+                  <v-icon>mdi-plus</v-icon>
+                </v-btn>
+              </v-card-text>
+            </v-card>
+          </v-col>
           <v-col
             class="flex-initial"
             v-for="deck in decks"
@@ -58,19 +73,6 @@
             </v-card>
           </v-col>
         </v-row>
-        <v-card
-          max-width="250"
-          @click="createNewDeck()"
-        >
-          <v-card-text class="text-center">
-            <p class="display-1">
-              Create<br>New<br>Deck
-            </p>
-            <v-btn icon>
-              <v-icon>mdi-plus</v-icon>
-            </v-btn>
-          </v-card-text>
-        </v-card>
       </v-col>
     </v-row>
     <v-navigation-drawer v-model="faqVisible" right absolute floating width="25%">
@@ -157,5 +159,8 @@ export default {
   .flex-initial {
     flex: initial;
     width: 300px;
+  }
+  #new-deck-card {
+    min-height: 320px;
   }
 </style>
