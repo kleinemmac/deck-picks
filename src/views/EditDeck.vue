@@ -12,7 +12,7 @@
       <template v-else>
         <v-col cols="3" class="pa-0">
           <v-navigation-drawer floating width="100%">
-            <v-container>
+            <v-container class="pb-0">
               <v-row>
                 <v-col>
                   <p class="display-1">
@@ -87,7 +87,29 @@
                     append-icon="mdi-magnify"
                     v-debounce:1000ms="searchCards"
                     autocomplete="off"
+                    color="success"
+                    :loading="searching"
+                    hide-details
                   ></v-text-field>
+                </v-col>
+              </v-row>
+            </v-container>
+            <v-container v-if="noResults" class="card-results">
+              <p>No results found</p>
+            </v-container>
+            <v-container class="py-0">
+              <v-row>
+                <v-col>
+                  <v-btn :disabled="filters.selectedPage === 1" @click="getPreviousPage()" text>
+                    <v-icon>mdi-chevron-left</v-icon>
+                    Prev
+                  </v-btn>
+                </v-col>
+                <v-col class="text-right">
+                  <v-btn :disabled="searchedCards.length < 100" @click="getNextPage()" text>
+                    Next
+                    <v-icon>mdi-chevron-right</v-icon>
+                  </v-btn>
                 </v-col>
               </v-row>
             </v-container>
@@ -107,19 +129,21 @@
           <template v-if="selectedCard">
             <div class="mx-auto img-container">
               <v-img
+                v-if="selectedCard.imageUrl"
                 :src="selectedCard.imageUrl"
                 max-width="265px"
                 class="mx-auto"
               >
                 <template v-slot:placeholder>
-                  <v-row
-                    class="fill-height ma-0"
-                    align="center"
-                    justify="center"
-                  >
-                    <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
-                  </v-row>
+                  <img src="../assets/mtgback.jpg" alt="placeholder image">
                 </template>
+              </v-img>
+              <v-img
+                v-if="!selectedCard.imageUrl"
+                src="../assets/mtgback.jpg"
+                max-width="265px"
+                class="mx-auto"
+              >
               </v-img>
               <v-btn id="add-card" class="mx-2" fab dark color="purple" @click="addCardToDeck()">
                 <v-icon dark>mdi-plus</v-icon>
@@ -201,12 +225,15 @@ export default {
     deck: null,
     loadingDeck: true,
     editingName: false,
-    searchValue: null,
+    searchValue: '',
+    searching: false,
+    noResults: false,
     filters: {
       selectedLegalities: [],
       convertedManaCost: [],
       selectedColors: [],
-      selectedRarities: []
+      selectedRarities: [],
+      selectedPage: 1
     },
     searchedCards: [],
     legalityItems: [
@@ -238,13 +265,25 @@ export default {
       this.$store.dispatch('decks/updateDeck', this.deck)
     },
     searchCards () {
+      this.searching = true
       const searchConfig = {
         searchValue: this.searchValue,
         filters: this.filters
       }
-      this.$store.dispatch('cards/searchCards', searchConfig).then(cards => {
-        this.searchedCards = cards
-      })
+      this.$store.dispatch('cards/searchCards', searchConfig)
+        .then(cards => {
+          this.searchedCards = cards
+          this.searching = false
+          this.searchedCards.length === 0 ? this.noResults = true : this.noResults = false
+        })
+    },
+    getNextPage () {
+      this.filters.selectedPage++
+      this.searchCards()
+    },
+    getPreviousPage () {
+      this.filters.selectedPage--
+      this.searchCards()
     },
     clearSearch () {
       this.searchValue = null
@@ -286,7 +325,7 @@ export default {
     height: 100%;
   }
   .card-results {
-    max-height: calc(100vh - 452px);
+    max-height: calc(100vh - 500px);
     overflow-y: auto;
   }
   .capitalize {
@@ -294,6 +333,7 @@ export default {
   }
   .img-container {
     width: 256px;
+    min-height: 411px;
   }
   .cursor-pointer {
     cursor: pointer;

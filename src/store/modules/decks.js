@@ -35,6 +35,29 @@ const actions = {
     return id
   },
   async updateDeck ({ commit }, deck) {
+    const counts = {
+      white: 0,
+      blue: 0,
+      red: 0,
+      black: 0,
+      green: 0
+    }
+    deck.cards.forEach((card) => {
+      card.colors.forEach((color) => {
+        if (color === 'White') {
+          counts.white++
+        } else if (color === 'Blue') {
+          counts.blue++
+        } else if (color === 'Red') {
+          counts.red++
+        } else if (color === 'Black') {
+          counts.black++
+        } else if (color === 'Green') {
+          counts.green++
+        }
+      })
+    })
+    deck.color = Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b)
     localforage.setItem('deck-' + deck.id, deck)
     commit('updateDeck', deck)
   },

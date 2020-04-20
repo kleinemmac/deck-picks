@@ -39,8 +39,8 @@
                     <v-img
                       height="200"
                       width="200"
-                      :src="deck.cards[0].imageUrl"
-                      v-if="deck.cards.length > 0"
+                      :src="require(`../assets/${deck.color}.svg`)"
+                      v-if="deck.color"
                     ></v-img>
                   </v-col>
                   <v-col
@@ -86,14 +86,12 @@
             </div>
             <p class="display-1 pb-5">FAQs</p>
             <div class="headline">
-              <p>What are the rules for various deck formats?</p>
-              <p>What are the differences between colors?</p>
-              <p>What is a Mana Curve?</p>
-              <p>Why are some cards banned or restricted?</p>
-              <p>What is a sideboard?</p>
-              <p>What are some helpful resources for a beginner MTG player?</p>
-              <p>How much do cards cost?</p>
-              <p>Will I ever experience a love that is not temporary?</p>
+              <p><a href="https://magic.wizards.com/en/game-info/gameplay/rules-and-formats/formats" target="_blank">What are the rules for various deck formats?</a></p>
+              <p><a href="https://mtg.gamepedia.com/Color" target="_blank">What are the differences between colors?</a></p>
+              <p><a href="https://themagiccenter.com/learn-magic/mana-curve/" target="_blank">What is a Mana Curve?</a></p>
+              <p><a href="https://magic.wizards.com/en/game-info/gameplay/rules-and-formats/banned-restricted" target="_blank">Why are some cards banned or restricted?</a></p>
+              <p><a href="https://www.thegamer.com/magic-the-gathering-pro-tips-beginner/" target="_blank">What are some helpful resources for a beginner MTG player?</a></p>
+              <p><a href="https://www.mtgprice.com/magic-the-gathering-prices.jsp" target="_blank">How much do cards cost?</a></p>
             </div>
           </v-col>
         </v-row>
@@ -148,6 +146,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  a {
+    text-decoration: none;
+    color: white !important;
+  }
+  .flex-initial {
+    flex: initial;
+    width: 300px;
+  }
   #faqs-button {
     position: fixed;
     right: -32px;
@@ -155,10 +161,6 @@ export default {
     i {
       right: 15px;
     }
-  }
-  .flex-initial {
-    flex: initial;
-    width: 300px;
   }
   #new-deck-card {
     min-height: 320px;

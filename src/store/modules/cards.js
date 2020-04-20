@@ -16,7 +16,8 @@ const actions = {
         legality: searchConfig.filters.selectedLegalities.join(),
         cmc: searchConfig.filters.convertedManaCost,
         colors: searchConfig.filters.selectedColors.join(),
-        rarity: searchConfig.filters.selectedRarities.join()
+        rarity: searchConfig.filters.selectedRarities.join(),
+        page: searchConfig.filters.selectedPage
       }
     }).then(response => {
       commit('setCards', response.data.cards)
