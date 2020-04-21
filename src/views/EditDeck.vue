@@ -1,5 +1,6 @@
 <template>
   <v-container fluid class="pa-0 full-height">
+    <v-tour name="editDeckTour" :steps="tourSteps"></v-tour>
     <v-row class="mx-0 full-height">
       <v-col v-if="loadingDeck">
         <v-progress-circular
@@ -13,7 +14,7 @@
         <v-col cols="3" class="pa-0">
           <v-navigation-drawer floating width="100%">
             <v-container class="pb-0">
-              <v-row>
+              <v-row id="filter-area">
                 <v-col>
                   <p class="display-1">
                     Filters
@@ -76,7 +77,7 @@
                   </v-row>
                 </v-col>
               </v-row>
-              <v-row>
+              <v-row id="search-area">
                 <v-col>
                   <p class="display-1">
                     Search
@@ -173,7 +174,7 @@
         <v-col cols="3" class="pa-0">
           <v-navigation-drawer floating width="100%">
             <v-container>
-              <v-row>
+              <v-row id="edit-deck-name">
                 <v-col v-if="!editingName" class="text-center">
                   <p class="display-1">
                     {{ deck.name.length > 0 ? deck.name : 'Deck Name'  }}
@@ -218,6 +219,8 @@
 export default {
   name: 'EditDeck',
 
+  props: ['triggerTour'],
+
   components: {
   },
 
@@ -257,7 +260,37 @@ export default {
       'Special',
       'Basic Land'
     ],
-    selectedCard: null
+    selectedCard: null,
+    tourSteps: [
+      {
+        target: '#filter-area',
+        header: {
+          title: 'Refine Your Search'
+        },
+        content: 'Use filters to narrow your search.'
+      },
+      {
+        target: '#search-area',
+        header: {
+          title: 'Search by Card Name'
+        },
+        content: 'Start typing a card name for a list of results. Results are displayed in sets of 100 items. Use PREV and NEXT to cycle through sets of results.'
+      },
+      {
+        target: '#edit-deck-name',
+        header: {
+          title: 'Name Your Deck'
+        },
+        content: 'Pick a creative name for your deck.'
+      },
+      {
+        target: '#deck-listing',
+        header: {
+          title: 'View Your Selected Cards'
+        },
+        content: 'The cards you select using the purple icon will appear here. Tap the X icon to remove them from your list.'
+      }
+    ]
   }),
 
   methods: {
@@ -305,6 +338,15 @@ export default {
     removeCardFromDeck (index) {
       this.deck.cards.splice(index, 1)
       this.updateDeck()
+    }
+  },
+
+  watch: {
+    triggerTour: function (newVal) {
+      if (newVal) {
+        this.$tours.editDeckTour.start()
+        this.$emit('resetTour')
+      }
     }
   },
 

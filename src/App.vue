@@ -8,15 +8,14 @@
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
         icon
+        @click="triggerTour = true"
       >
         <v-icon>mdi-help-circle-outline</v-icon>
       </v-btn>
     </v-app-bar>
     <v-content>
-      <router-view></router-view>
+      <router-view :triggerTour="triggerTour" @resetTour="triggerTour = false"></router-view>
     </v-content>
     <v-footer id="footer" fixed></v-footer>
   </v-app>
@@ -30,6 +29,7 @@ export default {
   },
 
   data: () => ({
+    triggerTour: false
   }),
 
   created () {

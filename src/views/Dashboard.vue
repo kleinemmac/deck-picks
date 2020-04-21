@@ -1,5 +1,34 @@
 <template>
   <v-container fluid>
+    <v-tour name="dashboardTour" :steps="tourSteps"></v-tour>
+    <v-dialog
+      v-model="confirmDelete"
+      max-width="290"
+    >
+      <v-card>
+        <v-card-title class="headline">Delete Deck?</v-card-title>
+        <v-card-text>
+          Are you sure you want to delete this deck? Once deleted, it cannot be recovered.
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="red darken-1"
+            text
+            @click="confirmDelete = false"
+          >
+            Cancel
+          </v-btn>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="deleteDeck()"
+          >
+            Delete
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <v-row v-if="loadingDecks" justify="center">
       <v-progress-circular
         :size="70"
@@ -29,7 +58,7 @@
           </v-col>
           <v-col
             class="flex-initial"
-            v-for="deck in decks"
+            v-for="(deck, index) in decks"
             :key="deck.id"
           >
             <v-card class="d-inline-block mx-auto">
@@ -52,13 +81,18 @@
                       justify="center"
                     >
                       <v-col class="px-0">
-                        <v-btn icon @click="editDeck(deck.id)">
+                        <v-btn :id="'edit-button-' + index" icon @click="editDeck(deck.id)">
                           <v-icon>mdi-pencil</v-icon>
                         </v-btn>
                       </v-col>
                       <v-col class="px-0">
-                        <v-btn icon @click="deleteDeck(deck.id)">
+                        <v-btn :id="'delete-button-' + index" icon @click="startDeleteDeck(deck.id)">
                           <v-icon>mdi-trash-can</v-icon>
+                        </v-btn>
+                      </v-col>
+                      <v-col class="px-0">
+                        <v-btn :id="'export-button-' + index" icon @click="exportDeck(deck)">
+                          <v-icon>mdi-application-export</v-icon>
                         </v-btn>
                       </v-col>
                     </v-row>
@@ -104,8 +138,12 @@
 </template>
 
 <script>
+import download from 'downloadjs'
+
 export default {
   name: 'Dashboard',
+
+  props: ['triggerTour'],
 
   components: {
   },
@@ -114,7 +152,39 @@ export default {
     faqVisible: true,
     faqButtonVisible: false,
     decks: [],
-    loadingDecks: true
+    loadingDecks: true,
+    confirmDelete: false,
+    toDelete: null,
+    tourSteps: [
+      {
+        target: '#new-deck-card',
+        header: {
+          title: 'Create a New Deck'
+        },
+        content: 'Click here to create a new deck.'
+      },
+      {
+        target: '#edit-button-0',
+        header: {
+          title: 'Edit Existing Deck'
+        },
+        content: 'Click here to edit a deck you already made.'
+      },
+      {
+        target: '#delete-button-0',
+        header: {
+          title: 'Delete Deck'
+        },
+        content: 'Click here to delete a deck.'
+      },
+      {
+        target: '#export-button-0',
+        header: {
+          title: 'Export Deck'
+        },
+        content: 'Click here to export a deck.'
+      }
+    ]
   }),
 
   methods: {
@@ -132,10 +202,27 @@ export default {
     editDeck (id) {
       this.$router.push({ name: 'edit-deck', params: { id } })
     },
-    deleteDeck (id) {
-      this.$store.dispatch('decks/deleteDeck', id).then(() => {
+    startDeleteDeck (id) {
+      this.toDelete = id
+      this.confirmDelete = true
+    },
+    deleteDeck () {
+      this.$store.dispatch('decks/deleteDeck', this.toDelete).then(() => {
         this.getAllDecks()
+        this.confirmDelete = false
       })
+    },
+    exportDeck (deck) {
+      download(JSON.stringify(deck), deck.name, 'application/json')
+    }
+  },
+
+  watch: {
+    triggerTour: function (newVal) {
+      if (newVal) {
+        this.$tours.dashboardTour.start()
+        this.$emit('resetTour')
+      }
     }
   },
 
